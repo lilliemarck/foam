@@ -1,5 +1,11 @@
 add_executable(foam
-	main.cc)
+	editor.cc
+	editor.hh
+	main.cc
+	room.cc
+	room.hh
+	sprite.cc
+	sprite.hh)
 
 target_link_libraries(foam
 	allegro
