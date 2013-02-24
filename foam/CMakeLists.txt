@@ -1,4 +1,5 @@
 add_executable(foam
+	algorithm.hh
 	editor.cc
 	editor.hh
 	main.cc
