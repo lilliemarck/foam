@@ -2,6 +2,8 @@
 
 #include <allegro5/allegro.h>
 #include <foam/room.hh>
+#include <ui/button.hh>
+#include <ui/window.hh>
 #include <memory>
 
 namespace foam {
@@ -19,6 +21,8 @@ private:
 	int mouse_x_;
 	int mouse_y_;
 	bool mouse_down_;
+	ui::window root_;
+	ui::button button_;
 };
 
 } // namespace foam

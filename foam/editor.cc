@@ -2,9 +2,14 @@
 
 #include <allegro5/allegro.h>
 #include <foam/algorithm.hh>
+#include <iostream>
 #include <functional>
 
 namespace foam {
+
+static void button_handler(ui_button *button, void *data) {
+	std::cout << "button clicked" << std::endl;
+}
 
 editor::editor()
 	: room_(std::make_shared<foam::room>(32, 20))
@@ -12,9 +17,17 @@ editor::editor()
 	, mouse_x_(0)
 	, mouse_y_(0)
 	, mouse_down_(false) {
+	root_.create();
+	root_.set_frame({0, 0, 512, 320});
+	button_.create(root_);
+	button_.set_frame({10, 10, 10, 16});
+	button_.set_value("Button");
+	button_.set_handler(button_handler, nullptr);
 }
 
 void editor::handle_event(ALLEGRO_EVENT const& event) {
+	root_.handle_event(event);
+
 	switch (event.type) {
 	case ALLEGRO_EVENT_MOUSE_AXES:
 		if (mouse_down_) {
@@ -38,6 +51,7 @@ void editor::handle_event(ALLEGRO_EVENT const& event) {
 
 void editor::draw() {
 	room_->draw();
+	root_.draw();
 }
 
 } // namespace foam

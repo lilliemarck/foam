@@ -9,5 +9,7 @@ add_executable(foam
 	sprite.hh)
 
 target_link_libraries(foam
+	ui
+	allegro_primitives
 	allegro
 	allegro_main)
