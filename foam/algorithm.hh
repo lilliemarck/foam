@@ -1,6 +1,9 @@
 #pragma once
 
+#include <foam/vector.hh>
 #include <cstdlib>
+
+namespace foam {
 
 template <typename PutPixel>
 void bresenham_line(int x1, int y1, int x2, int y2, PutPixel put_pixel)
@@ -31,3 +34,10 @@ void bresenham_line(int x1, int y1, int x2, int y2, PutPixel put_pixel)
 		}
 	}
 }
+
+template <typename PutPixel>
+void bresenham_line(vector2i const& begin, vector2i const& end, PutPixel put_pixel) {
+	bresenham_line(begin.x(), begin.y(), end.x(), end.y(), put_pixel);
+}
+
+} // namespace foam

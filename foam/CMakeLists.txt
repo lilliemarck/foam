@@ -1,12 +1,15 @@
 add_executable(foam
 	algorithm.hh
+	camera.cc
+	camera.hh
 	editor.cc
 	editor.hh
 	main.cc
 	room.cc
 	room.hh
 	sprite.cc
-	sprite.hh)
+	sprite.hh
+	vector.hh)
 
 target_link_libraries(foam
 	ui
