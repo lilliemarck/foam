@@ -27,13 +27,15 @@ int main() {
 		al_flip_display();
 		al_wait_for_event(event_queue, &event);
 
-		switch (event.type) {
-		case ALLEGRO_EVENT_DISPLAY_CLOSE:
-			run = false;
-			break;
-		}
+		do {
+			switch (event.type) {
+			case ALLEGRO_EVENT_DISPLAY_CLOSE:
+				run = false;
+				break;
+			}
 
-		editor.handle_event(event);
+			editor.handle_event(event);
+		} while (al_get_next_event(event_queue, &event));
 	}
 
 	return 0;
