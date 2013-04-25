@@ -1,9 +1,9 @@
 #include <foam/editor.hh>
 
 #include <allegro5/allegro.h>
-#include <foam/algorithm.hh>
+#include <foam/memory.hh>
 #include <iostream>
-#include <functional>
+#include <stdexcept>
 
 namespace foam {
 
@@ -14,9 +14,7 @@ static void button_handler(ui_button *button, void *data) {
 editor::editor()
 	: room_(std::make_shared<foam::room>(32, 20))
 	, fg_color_(al_map_rgb(255, 127, 0))
-	, world_mouse_{0, 0}
 	, mouse_z_{0}
-	, mouse_down_{false}
 	, panning_{false} {
 	root_.create();
 	root_.set_frame({0, 0, 512, 320});
@@ -24,6 +22,7 @@ editor::editor()
 	button_.set_frame({10, 10, 10, 16});
 	button_.set_value("Button");
 	button_.set_handler(button_handler, nullptr);
+	pen_ = make_unique<pen>(*this);
 }
 
 void editor::handle_event(ALLEGRO_EVENT const& event) {
@@ -46,11 +45,6 @@ void editor::handle_mouse_axes(ALLEGRO_EVENT const& event) {
 	vector2i mouse_position(event.mouse.x, event.mouse.y);
 	auto world_position = camera_.to_world_space(mouse_position);
 
-	if (mouse_down_) {
-		using namespace std::placeholders;
-		bresenham_line(world_mouse_, world_position, std::bind(&room::put_pixel, room_, _1, _2, fg_color_));
-	}
-
 	if (panning_) {
 		auto offset = camera_.to_world_scale(mouse_position);
 		camera_.set_position(grab_position_ - offset);
@@ -62,28 +56,29 @@ void editor::handle_mouse_axes(ALLEGRO_EVENT const& event) {
 		mouse_z_ = event.mouse.z;
 	}
 
-	world_mouse_ = world_position;
+	if (pen_) {
+		pen_->on_mouse_axes(event.mouse);
+	}
 }
 
 void editor::handle_mouse_button_down(ALLEGRO_EVENT const& event) {
-	world_mouse_ = camera_.to_world_space(vector2i(event.mouse.x, event.mouse.y));;
-
-	if (event.mouse.button == 1) {
-		room_->put_pixel(world_mouse_.x(), world_mouse_.y(), fg_color_);
-		mouse_down_ = true;
-	}
-	else if (event.mouse.button == 2) {
-		grab_position_ = world_mouse_;
+	if (event.mouse.button == 2) {
+		grab_position_ = camera_.to_world_space({event.mouse.x, event.mouse.y});
 		panning_ = true;
+	}
+
+	if (pen_) {
+		pen_->on_mouse_button_down(event.mouse);
 	}
 }
 
 void editor::handle_mouse_button_up(ALLEGRO_EVENT const& event) {
-	if (event.mouse.button == 1) {
-		mouse_down_ = false;
-	}
-	else if (event.mouse.button == 2) {
+	if (event.mouse.button == 2) {
 		panning_ = false;
+	}
+
+	if (pen_) {
+		pen_->on_mouse_button_up(event.mouse);
 	}
 }
 
@@ -95,6 +90,21 @@ void editor::draw() {
 	al_identity_transform(&transform);
 	al_use_transform(&transform);
 	root_.draw();
+}
+
+camera& editor::get_camera() {
+	return camera_;
+}
+
+room& editor::get_room() {
+	if (!room_) {
+		throw std::logic_error("Editor has no room to return.");
+	}
+	return *room_;
+}
+
+ALLEGRO_COLOR editor::get_fg_color() const {
+	return fg_color_;
 }
 
 } // namespace foam

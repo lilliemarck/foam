@@ -2,6 +2,7 @@
 
 #include <allegro5/allegro.h>
 #include <foam/camera.hh>
+#include <foam/pen.hh>
 #include <foam/room.hh>
 #include <foam/vector.hh>
 #include <ui/button.hh>
@@ -17,6 +18,10 @@ public:
 	void handle_event(ALLEGRO_EVENT const& event);
 	void draw();
 
+	camera& get_camera();
+	room& get_room();
+	ALLEGRO_COLOR get_fg_color() const;
+
 private:
 	void handle_mouse_axes(ALLEGRO_EVENT const& event);
 	void handle_mouse_button_down(ALLEGRO_EVENT const& event);
@@ -25,11 +30,10 @@ private:
 	camera camera_;
 	std::shared_ptr<room> room_;
 	ALLEGRO_COLOR fg_color_;
-	vector2i world_mouse_;
 	int mouse_z_;
-	bool mouse_down_;
 	vector2i grab_position_;
 	bool panning_;
+	std::unique_ptr<pen> pen_;
 	ui::window root_;
 	ui::button button_;
 };

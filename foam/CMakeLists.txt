@@ -5,6 +5,9 @@ add_executable(foam
 	editor.cc
 	editor.hh
 	main.cc
+	memory.hh
+	pen.cc
+	pen.hh
 	room.cc
 	room.hh
 	sprite.cc
