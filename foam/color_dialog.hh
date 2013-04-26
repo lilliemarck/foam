@@ -14,6 +14,7 @@ private:
 	void on_draw(ui::window& window) override;
 
 	foam::editor& editor_;
+	int first_index_;
 };
 
 } // namespace foam

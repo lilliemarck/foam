@@ -1,18 +1,20 @@
 #include <foam/color_dialog.hh>
 
 #include <allegro5/allegro_primitives.h>
+#include <boost/algorithm/clamp.hpp>
 #include <boost/optional.hpp>
 #include <foam/editor.hh>
 
 namespace foam {
 namespace {
 
+int const border = 8;
 int const well_size = 16;
-int const spacing = 8;
+int const spacing = 4;
 
 boost::optional<unsigned> position_to_color_index(int x, int y) {
-	x -= spacing;
-	y -= spacing;
+	x -= border;
+	y -= border;
 
 	if (x < 0 || x >= well_size) {
 		return {};
@@ -30,25 +32,38 @@ boost::optional<unsigned> position_to_color_index(int x, int y) {
 
 } // namespace
 
-color_dialog::color_dialog(editor& editor) : editor_(editor) {
+color_dialog::color_dialog(editor& editor)
+	: editor_(editor)
+	, first_index_(0) {
 }
 
 bool color_dialog::on_event(ui::window& window, ALLEGRO_EVENT const& event) {
+	ui::rectangle const rect = window.get_frame();
+	auto const& palette = editor_.get_color_palette();
+
 	switch (event.type) {
+	case ALLEGRO_EVENT_MOUSE_AXES:
+		{
+			int content_height = rect.height - 2 * border + spacing;
+			int visible_wells = std::max(content_height / (well_size + spacing), 0);
+			int max_index = palette.size() - visible_wells;
+			int new_index = first_index_ - event.mouse.dz;
+			first_index_ = boost::algorithm::clamp(new_index, 0, max_index);
+		}
+		break;
 	case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
 		{
-			ui::rectangle rect = window.get_frame();
 			int x = event.mouse.x - rect.x;
 			int y = event.mouse.y - rect.y;
 
-			if (auto color_index = position_to_color_index(x, y)) {
-				auto const& palette = editor_.get_color_palette();
-
-				if (*color_index < palette.size()) {
-					editor_.set_fg_color(palette[*color_index]);
+			if (auto optional_index = position_to_color_index(x, y)) {
+				std::size_t index = *optional_index + first_index_;
+				if (index < palette.size()) {
+					editor_.set_fg_color(palette[index]);
 				}
 			}
 		}
+		break;
 	}
 
 	return true;
@@ -59,12 +74,19 @@ void color_dialog::on_draw(ui::window& window) {
 	ALLEGRO_COLOR bg_color = al_map_rgb(63, 63, 63);
 	al_draw_filled_rectangle(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height, bg_color);
 
-	int x = rect.x + spacing;
-	int y = rect.y + spacing;
+	int x = rect.x + border;
+	int y = rect.y + border;
+	int bottom = rect.y + rect.height;
 
-	for (auto const& color : editor_.get_color_palette()) {
-		al_draw_filled_rectangle(x, y, x + well_size, y + well_size, color);
+	auto const& palette = editor_.get_color_palette();
+
+	for (std::size_t i = first_index_; i < palette.size(); ++i) {
+		al_draw_filled_rectangle(x, y, x + well_size, y + well_size, palette[i]);
 		y += well_size + spacing;
+
+		if (y > bottom) {
+			break;
+		}
 	}
 }
 
