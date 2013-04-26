@@ -22,6 +22,7 @@ private:
 
 	std::shared_ptr<ALLEGRO_FONT> font_;
 	std::vector<menu_item> items_;
+	bool mouse_over_;
 	boost::optional<std::size_t> highlight_;
 };
 

@@ -36,8 +36,9 @@ size menu::wanted_size() {
 }
 
 void menu::on_event(ALLEGRO_EVENT const& event) {
-	rectangle frame = get_frame();
 	if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
+		mouse_over_ = is_inside(get_frame(), event.mouse.x, event.mouse.y);
+
 		if (highlight_) {
 			update_highlight(event.mouse.x, event.mouse.y);
 		}
@@ -46,7 +47,7 @@ void menu::on_event(ALLEGRO_EVENT const& event) {
 		update_highlight(event.mouse.x, event.mouse.y);
 	}
 	else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) {
-		if (is_inside(frame, event.mouse.x, event.mouse.y) && highlight_) {
+		if (mouse_over_ && highlight_) {
 			items_[*highlight_].handler_();
 		}
 		highlight_.reset();
@@ -68,7 +69,7 @@ void menu::on_draw() {
 		int line_height = al_get_font_line_height(font_.get());
 		int y = frame.y;
 		for (std::size_t i = 0; i < items_.size(); ++i) {
-			if (i == highlight_) {
+			if (mouse_over_ && i == highlight_) {
 				al_draw_filled_rectangle(frame.x, y, frame.x + frame.width, y + line_height, al_map_rgb(127, 127, 127));
 			}
 
@@ -80,11 +81,10 @@ void menu::on_draw() {
 
 void menu::update_highlight(int mouse_x, int mouse_y) {
 	rectangle frame = get_frame();
-	if (is_inside(frame, mouse_x, mouse_y) && font_) {
+
+	if (mouse_over_ && font_) {
 		mouse_y -= frame.y;
 		highlight_ = mouse_y / al_get_font_line_height(font_.get());
-	} else {
-		highlight_.reset();
 	}
 }
 
