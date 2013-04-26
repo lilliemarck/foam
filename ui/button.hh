@@ -4,9 +4,18 @@
 
 namespace ui {
 
-using button_handler = void(window* button, void* data);
+struct button : public control {
+public:
+	using handler = void();
 
-window_ptr create_button();
-void set_button_handler(window_ptr const& button, button_handler* handler, void* data);
+	button();
+	void set_handler(handler* handler);
+
+private:
+	bool on_event(window& window, ALLEGRO_EVENT const& event) override;
+	void on_draw(window& window) override;
+
+	handler* handler_;
+};
 
 } // namespace ui

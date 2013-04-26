@@ -29,7 +29,7 @@ color_palette make_db_16_color_palette() {
 	};
 }
 
-static void button_handler(ui::window* button, void* data) {
+static void button_handler() {
 	std::cout << "button clicked" << std::endl;
 }
 
@@ -42,14 +42,14 @@ editor::editor()
 	root_ = std::make_shared<ui::window>();
 	root_->set_frame({0, 0, 512, 320});
 
-	color_dialog_ = create_color_dialog(*this);
+	color_dialog_ = ui::make_window<color_dialog>(*this);
 	color_dialog_->set_frame({480, 0, 32, 320});
 	root_->append_child(color_dialog_);
 
-	button_ = ui::create_button();
+	button_ = ui::make_window<ui::button>();
 	button_->set_frame({10, 10, 10, 16});
 	button_->set_value("Button");
-	set_button_handler(button_, &button_handler, nullptr);
+	button_->get_control<ui::button>()->set_handler(&button_handler);
 	root_->append_child(button_);
 
 	pen_ = make_unique<pen>(*this);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <boost/noncopyable.hpp>
+#include <ui/control.hh>
 #include <memory>
 #include <vector>
 
@@ -23,18 +25,17 @@ struct rectangle {
 	int height;
 };
 
-class window {
+class window : private boost::noncopyable {
 public:
-	window(window_proc* proc = nullptr, void* data = nullptr);
+	window();
 	~window();
 
 	void append_child(window_ptr const& child);
 	void detatch();
 
 	template <typename T>
-	T* get_proc_data() {
-		return static_cast<T*>(proc_data_);
-	}
+	std::shared_ptr<T> get_control() { return std::dynamic_pointer_cast<T>(control_); }
+	void set_control(std::shared_ptr<control> const& control);
 
 	rectangle get_frame() const;
 	void set_frame(rectangle const& frame);
@@ -51,9 +52,15 @@ private:
 	window* parent_;
 	rectangle frame_;
 	std::string value_;
-	window_proc* proc_;
-	void* proc_data_;
+	std::shared_ptr<control> control_;
 	std::vector<std::shared_ptr<window>> children_;
 };
+
+template <typename Control, typename... Args>
+window_ptr make_window(Args&&... args) {
+	auto window = std::make_shared<ui::window>();
+	window->set_control(std::make_shared<Control>(args...));
+	return window;
+}
 
 } // namespace ui

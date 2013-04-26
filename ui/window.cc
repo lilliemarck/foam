@@ -4,20 +4,11 @@
 
 namespace ui {
 
-window::window(window_proc proc, void* data)
-	: parent_(nullptr)
-	, proc_(proc)
-	, proc_data_(data) {
-	if (proc) {
-		proc(this, UI_MESSAGE_CREATE, 0);
-	}
+window::window()
+	: parent_(nullptr) {
 }
 
 window::~window() {
-	if (proc_) {
-		proc_(this, UI_MESSAGE_DESTROY, 0);
-	}
-
 	detatch();
 }
 
@@ -41,6 +32,10 @@ void window::detatch() {
 	}
 }
 
+void window::set_control(std::shared_ptr<control> const& control) {
+	control_ = control;
+}
+
 rectangle window::get_frame() const {
 	return frame_;
 }
@@ -58,9 +53,9 @@ void window::set_value(char const* value) {
 }
 
 void window::draw() {
-	if (proc_) {
+	if (control_) {
 		al_set_clipping_rectangle(frame_.x, frame_.y, frame_.width, frame_.height);
-		proc_(this, UI_MESSAGE_DRAW, 0);
+		control_->on_draw(*this);
 	}
 
 	for (auto& child : children_) {
@@ -79,8 +74,8 @@ bool window::dispatch_mouse_event(ALLEGRO_EVENT const& event) {
 	int bottom = frame_.y + frame_.height;
 	if (event.mouse.x >= frame_.x && event.mouse.x < right &&
 	    event.mouse.y >= frame_.y && event.mouse.y < bottom) {
-		if (proc_) {
-			proc_(this, UI_MESSAGE_EVENT, reinterpret_cast<intptr_t>(&event));
+		if (control_) {
+			control_->on_event(*this, event);
 		}
 		return true;
 	}
