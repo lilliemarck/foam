@@ -65,27 +65,16 @@ void window::draw() {
 	}
 }
 
-bool window::dispatch_mouse_event(ALLEGRO_EVENT const& event) {
+void window::dispatch_mouse_event(ALLEGRO_EVENT const& event) {
 	for (auto i = children_.rbegin(); i != children_.rend(); ++i) {
-		if ((*i)->dispatch_mouse_event(event)) {
-			return true;
-		}
+		(*i)->dispatch_mouse_event(event);
 	}
 
-	int right = frame_.x + frame_.width;
-	int bottom = frame_.y + frame_.height;
-	if (event.mouse.x >= frame_.x && event.mouse.x < right &&
-	    event.mouse.y >= frame_.y && event.mouse.y < bottom) {
+	on_event(event);
 
-		on_event(event);
-
-		if (control_) {
-			control_->on_event(*this, event);
-		}
-		return true;
+	if (control_) {
+		control_->on_event(*this, event);
 	}
-
-	return false;
 }
 
 void window::handle_event(ALLEGRO_EVENT const& event) {

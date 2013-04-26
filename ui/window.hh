@@ -62,7 +62,7 @@ protected:
 	virtual void on_event(ALLEGRO_EVENT const& event) {}
 
 private:
-	bool dispatch_mouse_event(ALLEGRO_EVENT const& event);
+	void dispatch_mouse_event(ALLEGRO_EVENT const& event);
 
 	window* parent_;
 	rectangle frame_;

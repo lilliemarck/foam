@@ -43,7 +43,7 @@ bool color_dialog::on_event(ui::window& window, ALLEGRO_EVENT const& event) {
 
 	switch (event.type) {
 	case ALLEGRO_EVENT_MOUSE_AXES:
-		{
+		if (is_inside(rect, event.mouse.x, event.mouse.y)) {
 			int content_height = rect.height - 2 * border + spacing;
 			int visible_wells = std::max(content_height / (well_size + spacing), 0);
 			int max_index = palette.size() - visible_wells;
@@ -52,7 +52,7 @@ bool color_dialog::on_event(ui::window& window, ALLEGRO_EVENT const& event) {
 		}
 		break;
 	case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
-		{
+		if (is_inside(rect, event.mouse.x, event.mouse.y)) {
 			int x = event.mouse.x - rect.x;
 			int y = event.mouse.y - rect.y;
 

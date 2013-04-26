@@ -15,7 +15,7 @@ void button::set_handler(handler* handler) {
 bool button::on_event(window& window, ALLEGRO_EVENT const& event) {
 	switch (event.type) {
 	case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
-		if (handler_) {
+		if (is_inside(window.get_frame(), event.mouse.x, event.mouse.y) && handler_) {
 			handler_();
 			return true;
 		}
