@@ -2,10 +2,32 @@
 
 #include <allegro5/allegro.h>
 #include <foam/memory.hh>
+#include <foam/color_dialog.hh>
 #include <iostream>
 #include <stdexcept>
 
 namespace foam {
+
+color_palette make_db_16_color_palette() {
+	return {
+		al_map_rgb( 20,  12,  28),
+		al_map_rgb( 68,  36,  52),
+		al_map_rgb( 48,  52, 109),
+		al_map_rgb( 78,  74,  78),
+		al_map_rgb(133,  76,  48),
+		al_map_rgb( 52,  101, 36),
+		al_map_rgb(208,  70,  72),
+		al_map_rgb(117, 113,  97),
+		al_map_rgb( 89, 125, 206),
+		al_map_rgb(210, 125,  44),
+		al_map_rgb(133, 149, 161),
+		al_map_rgb(109, 170,  44),
+		al_map_rgb(210, 170, 153),
+		al_map_rgb(109, 194, 202),
+		al_map_rgb(218, 212,  94),
+		al_map_rgb(222, 238, 214)
+	};
+}
 
 static void button_handler(ui_button *button, void *data) {
 	std::cout << "button clicked" << std::endl;
@@ -13,11 +35,14 @@ static void button_handler(ui_button *button, void *data) {
 
 editor::editor()
 	: room_(std::make_shared<foam::room>(32, 20))
-	, fg_color_(al_map_rgb(255, 127, 0))
+	, color_palette_(make_db_16_color_palette())
+	, fg_color_(color_palette_.back())
 	, mouse_z_{0}
 	, panning_{false} {
 	root_.create();
 	root_.set_frame({0, 0, 512, 320});
+	color_dialog_.set(create_color_dialog(root_.get(), *this));
+	color_dialog_.set_frame({480, 0, 32, 320});
 	button_.create(root_);
 	button_.set_frame({10, 10, 10, 16});
 	button_.set_value("Button");
@@ -83,6 +108,8 @@ void editor::handle_mouse_button_up(ALLEGRO_EVENT const& event) {
 }
 
 void editor::draw() {
+	al_reset_clipping_rectangle();
+
 	ALLEGRO_TRANSFORM transform = camera_.make_transform();
 	al_use_transform(&transform);
 	room_->draw();
@@ -103,8 +130,16 @@ room& editor::get_room() {
 	return *room_;
 }
 
+color_palette& editor::get_color_palette() {
+	return color_palette_;
+}
+
 ALLEGRO_COLOR editor::get_fg_color() const {
 	return fg_color_;
+}
+
+void editor::set_fg_color(ALLEGRO_COLOR color) {
+	fg_color_ = color;
 }
 
 } // namespace foam

@@ -2,6 +2,8 @@ add_executable(foam
 	algorithm.hh
 	camera.cc
 	camera.hh
+	color_dialog.cc
+	color_dialog.hh
 	editor.cc
 	editor.hh
 	main.cc

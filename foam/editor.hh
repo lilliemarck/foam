@@ -11,6 +11,8 @@
 
 namespace foam {
 
+using color_palette = std::vector<ALLEGRO_COLOR>;
+
 class editor {
 public:
 	editor();
@@ -20,7 +22,9 @@ public:
 
 	camera& get_camera();
 	room& get_room();
+	color_palette& get_color_palette();
 	ALLEGRO_COLOR get_fg_color() const;
+	void set_fg_color(ALLEGRO_COLOR color);
 
 private:
 	void handle_mouse_axes(ALLEGRO_EVENT const& event);
@@ -29,12 +33,14 @@ private:
 
 	camera camera_;
 	std::shared_ptr<room> room_;
+	color_palette color_palette_;
 	ALLEGRO_COLOR fg_color_;
 	int mouse_z_;
 	vector2i grab_position_;
 	bool panning_;
 	std::unique_ptr<pen> pen_;
 	ui::window root_;
+	ui::window color_dialog_;
 	ui::button button_;
 };
 

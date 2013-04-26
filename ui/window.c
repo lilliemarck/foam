@@ -83,6 +83,7 @@ void ui_set_value(ui_window *window, char const *value) {
 
 void ui_draw(ui_window *window) {
 	if (window->proc) {
+		al_set_clipping_rectangle(window->frame.x, window->frame.y, window->frame.width, window->frame.height);
 		window->proc(window, UI_MESSAGE_DRAW, 0);
 	}
 
