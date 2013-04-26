@@ -16,6 +16,7 @@ void window::append_child(window_ptr const& child)
 {
 	child->detatch();
 	children_.push_back(child);
+	child->parent_ = this;
 }
 
 void window::detatch() {

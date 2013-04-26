@@ -51,6 +51,7 @@ void menu::on_event(ALLEGRO_EVENT const& event) {
 			items_[*highlight_].handler_();
 		}
 		highlight_.reset();
+		detatch();
 	}
 }
 
