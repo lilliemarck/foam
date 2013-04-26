@@ -9,6 +9,10 @@
 #include <ui/window.hh>
 #include <memory>
 
+namespace ui {
+	class menu;
+}
+
 namespace foam {
 
 using color_palette = std::vector<ALLEGRO_COLOR>;
@@ -43,6 +47,7 @@ private:
 	ui::window_ptr root_;
 	ui::window_ptr color_dialog_;
 	ui::window_ptr button_;
+	std::shared_ptr<ui::menu> menu_;
 };
 
 } // namespace foam

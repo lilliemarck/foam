@@ -3,6 +3,7 @@
 #include <allegro5/allegro.h>
 #include <foam/memory.hh>
 #include <foam/color_dialog.hh>
+#include <ui/menu.hh>
 #include <iostream>
 #include <stdexcept>
 
@@ -53,6 +54,12 @@ editor::editor()
 	root_->append_child(button_);
 
 	pen_ = make_unique<pen>(*this);
+
+	menu_ = std::make_shared<ui::menu>();
+	menu_->append_item("Hello", [](){ std::cout << "Hello" << std::endl; });
+	menu_->append_item("World", [](){ std::cout << "World" << std::endl; });
+	menu_->set_frame({250, 100, 100, 100});
+	root_->append_child(menu_);
 }
 
 void editor::handle_event(ALLEGRO_EVENT const& event) {

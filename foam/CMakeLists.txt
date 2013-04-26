@@ -18,6 +18,8 @@ add_executable(foam
 
 target_link_libraries(foam
 	ui
+	allegro_ttf
+	allegro_font
 	allegro_primitives
 	allegro
 	allegro_main)

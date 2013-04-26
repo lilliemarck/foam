@@ -53,6 +53,8 @@ void window::set_value(char const* value) {
 }
 
 void window::draw() {
+	on_draw();
+
 	if (control_) {
 		al_set_clipping_rectangle(frame_.x, frame_.y, frame_.width, frame_.height);
 		control_->on_draw(*this);
@@ -74,6 +76,9 @@ bool window::dispatch_mouse_event(ALLEGRO_EVENT const& event) {
 	int bottom = frame_.y + frame_.height;
 	if (event.mouse.x >= frame_.x && event.mouse.x < right &&
 	    event.mouse.y >= frame_.y && event.mouse.y < bottom) {
+
+		on_event(event);
+
 		if (control_) {
 			control_->on_event(*this, event);
 		}

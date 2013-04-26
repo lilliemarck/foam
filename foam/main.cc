@@ -1,5 +1,7 @@
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_ttf.h>
 #include <foam/editor.hh>
 
 int main() {
@@ -7,6 +9,8 @@ int main() {
 	if (!al_install_mouse())         return 1;
 	if (!al_init_primitives_addon()) return 1;
 
+	al_init_font_addon();
+	al_init_ttf_addon();
 	al_set_new_display_flags(ALLEGRO_RESIZABLE);
 
 	ALLEGRO_DISPLAY *display = al_create_display(512, 320);
