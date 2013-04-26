@@ -39,9 +39,9 @@ private:
 	vector2i grab_position_;
 	bool panning_;
 	std::unique_ptr<pen> pen_;
-	ui::window root_;
-	ui::window color_dialog_;
-	ui::button button_;
+	ui::window_ptr root_;
+	ui::window_ptr color_dialog_;
+	ui::window_ptr button_;
 };
 
 } // namespace foam

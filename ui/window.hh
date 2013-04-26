@@ -1,54 +1,59 @@
 #pragma once
 
-#include <ui/window.h>
+#include <memory>
+#include <vector>
+
+union ALLEGRO_EVENT;
 
 namespace ui {
 
+#define UI_MESSAGE_CREATE   1
+#define UI_MESSAGE_DESTROY  2
+#define UI_MESSAGE_DRAW     3
+#define UI_MESSAGE_EVENT    4
+
+class window;
+using window_ptr = std::shared_ptr<window>;
+using window_proc = void(window* window, unsigned msg, intptr_t arg);
+
+struct rectangle {
+	int x;
+	int y;
+	int width;
+	int height;
+};
+
 class window {
 public:
-	window() : ptr_(nullptr) {
+	window(window_proc* proc = nullptr, void* data = nullptr);
+	~window();
+
+	void append_child(window_ptr const& child);
+	void detatch();
+
+	template <typename T>
+	T* get_proc_data() {
+		return static_cast<T*>(proc_data_);
 	}
 
-	window(ui_window* ptr) : ptr_(ptr) {
-	}
+	rectangle get_frame() const;
+	void set_frame(rectangle const& frame);
 
-	~window() {
-		ui_destroy_window(ptr_);
-	}
+	std::string const& get_value() const;
+	void set_value(char const* value);
 
-	void create() {
-		set(ui_create_window(nullptr, nullptr, nullptr));
-	}
-
-	void set_frame(ui_rectangle const& frame) {
-		ui_set_frame(ptr_, frame);
-	}
-
-	void set_value(char const* value) {
-		ui_set_value(ptr_, value);
-	}
-
-	void draw() {
-		ui_draw(ptr_);
-	}
-
-	void handle_event(ALLEGRO_EVENT const& event) {
-		ui_handle_event(ptr_, &event);
-	}
-
-	ui_window* get() {
-		return ptr_;
-	}
-
-	void set(ui_window* ptr) {
-		if (ptr_ != ptr) {
-			ui_destroy_window(ptr_);
-			ptr_ = ptr;
-		}
-	}
+	void draw();
+	void handle_event(ALLEGRO_EVENT const& event);
 
 private:
-	ui_window* ptr_;
+	bool dispatch_mouse_event(ALLEGRO_EVENT const& event);
+
+	window* parent_;
+	rectangle frame_;
+	std::string value_;
+	window_proc* proc_;
+	void* proc_data_;
+	std::vector<std::shared_ptr<window>> children_;
 };
 
 } // namespace ui

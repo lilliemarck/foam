@@ -1,11 +1,7 @@
 add_library(ui
-	array.c
-	array.h
-	button.c
-	button.h
+	button.cc
 	button.hh
-	window.c
-	window.h
+	window.cc
 	window.hh)
 
 target_link_libraries(ui

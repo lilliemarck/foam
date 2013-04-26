@@ -29,7 +29,7 @@ color_palette make_db_16_color_palette() {
 	};
 }
 
-static void button_handler(ui_button *button, void *data) {
+static void button_handler(ui::window* button, void* data) {
 	std::cout << "button clicked" << std::endl;
 }
 
@@ -39,19 +39,24 @@ editor::editor()
 	, fg_color_(color_palette_.back())
 	, mouse_z_{0}
 	, panning_{false} {
-	root_.create();
-	root_.set_frame({0, 0, 512, 320});
-	color_dialog_.set(create_color_dialog(root_.get(), *this));
-	color_dialog_.set_frame({480, 0, 32, 320});
-	button_.create(root_);
-	button_.set_frame({10, 10, 10, 16});
-	button_.set_value("Button");
-	button_.set_handler(button_handler, nullptr);
+	root_ = std::make_shared<ui::window>();
+	root_->set_frame({0, 0, 512, 320});
+
+	color_dialog_ = create_color_dialog(*this);
+	color_dialog_->set_frame({480, 0, 32, 320});
+	root_->append_child(color_dialog_);
+
+	button_ = ui::create_button();
+	button_->set_frame({10, 10, 10, 16});
+	button_->set_value("Button");
+	set_button_handler(button_, &button_handler, nullptr);
+	root_->append_child(button_);
+
 	pen_ = make_unique<pen>(*this);
 }
 
 void editor::handle_event(ALLEGRO_EVENT const& event) {
-	root_.handle_event(event);
+	root_->handle_event(event);
 
 	switch (event.type) {
 	case ALLEGRO_EVENT_MOUSE_AXES:
@@ -108,15 +113,13 @@ void editor::handle_mouse_button_up(ALLEGRO_EVENT const& event) {
 }
 
 void editor::draw() {
-	al_reset_clipping_rectangle();
-
 	ALLEGRO_TRANSFORM transform = camera_.make_transform();
 	al_use_transform(&transform);
 	room_->draw();
 
 	al_identity_transform(&transform);
 	al_use_transform(&transform);
-	root_.draw();
+	root_->draw();
 }
 
 camera& editor::get_camera() {

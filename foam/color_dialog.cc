@@ -16,10 +16,10 @@ struct color_dialog_impl {
 	foam::editor& editor;
 };
 
-void draw_color_dialog(ui_window *window) {
-	color_dialog_impl const& impl = *static_cast<color_dialog_impl*>(ui_get_proc_data(window));
+void draw_color_dialog(ui::window* window) {
+	color_dialog_impl const& impl = *window->get_proc_data<color_dialog_impl>();
 
-	ui_rectangle rect = ui_get_frame(window);
+	ui::rectangle rect = window->get_frame();
 	ALLEGRO_COLOR bg_color = al_map_rgb(63, 63, 63);
 	al_draw_filled_rectangle(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height, bg_color);
 
@@ -50,12 +50,12 @@ boost::optional<unsigned> position_to_color_index(int x, int y) {
 	return y / stride;
 }
 
-void handle_event(ui_window *window, ALLEGRO_EVENT const& event) {
+void handle_event(ui::window* window, ALLEGRO_EVENT const& event) {
 	switch (event.type) {
 	case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
 		{
-			color_dialog_impl const& impl = *static_cast<color_dialog_impl*>(ui_get_proc_data(window));
-			ui_rectangle rect = ui_get_frame(window);
+			color_dialog_impl const& impl = *window->get_proc_data<color_dialog_impl>();
+			ui::rectangle rect = window->get_frame();
 			int x = event.mouse.x - rect.x;
 			int y = event.mouse.y - rect.y;
 
@@ -70,10 +70,10 @@ void handle_event(ui_window *window, ALLEGRO_EVENT const& event) {
 	}
 }
 
-void color_dialog_proc(ui_window *window, unsigned msg, intptr_t arg) {
+void color_dialog_proc(ui::window* window, unsigned msg, intptr_t arg) {
 	switch (msg) {
 	case UI_MESSAGE_DESTROY:
-		delete static_cast<color_dialog_impl*>(ui_get_proc_data(window));
+		delete window->get_proc_data<color_dialog_impl>();
 		break;
 	case UI_MESSAGE_DRAW:
 		draw_color_dialog(window);
@@ -86,8 +86,8 @@ void color_dialog_proc(ui_window *window, unsigned msg, intptr_t arg) {
 
 } // namespace
 
-ui_window* create_color_dialog(ui_window* parent, editor& editor) {
-	return ui_create_window(parent, &color_dialog_proc, new color_dialog_impl{editor});
+ui::window_ptr create_color_dialog(editor& editor) {
+	return std::make_shared<ui::window>(&color_dialog_proc, new color_dialog_impl{editor});
 }
 
 } // namespace foam

@@ -1,19 +1,12 @@
 #pragma once
 
-#include <ui/button.h>
 #include <ui/window.hh>
 
 namespace ui {
 
-class button : public window {
-public:
-	void create(window& parent) {
-		set(ui_button_create(parent.get()));
-	}
+using button_handler = void(window* button, void* data);
 
-	void set_handler(ui_button_handler handler, void *data) {
-		ui_button_set_handler(get(), handler, data);
-	}
-};
+window_ptr create_button();
+void set_button_handler(window_ptr const& button, button_handler* handler, void* data);
 
 } // namespace ui

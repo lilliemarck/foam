@@ -5,6 +5,6 @@
 
 namespace foam {
 
-ui_window* create_color_dialog(ui_window* parent, editor& editor);
+ui::window_ptr create_color_dialog(editor& editor);
 
 } // namespace foam

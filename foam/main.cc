@@ -22,6 +22,7 @@ int main() {
 
 	while (run) {
 		al_set_target_backbuffer(display);
+		al_reset_clipping_rectangle();
 		al_clear_to_color(black);
 		editor.draw();
 		al_flip_display();
