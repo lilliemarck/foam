@@ -8,7 +8,7 @@
 namespace foam {
 namespace {
 
-int const border = 8;
+int const border = 6;
 int const well_size = 16;
 int const spacing = 4;
 
@@ -59,7 +59,7 @@ bool color_dialog::on_event(ui::window& window, ALLEGRO_EVENT const& event) {
 			if (auto optional_index = position_to_color_index(x, y)) {
 				std::size_t index = *optional_index + first_index_;
 				if (index < palette.size()) {
-					editor_.set_fg_color(palette[index]);
+					editor_.set_color_index(index);
 				}
 			}
 		}
@@ -79,8 +79,13 @@ void color_dialog::on_draw(ui::window& window) {
 	int bottom = rect.y + rect.height;
 
 	auto const& palette = editor_.get_color_palette();
+	std::size_t selected = editor_.get_color_index();
 
 	for (std::size_t i = first_index_; i < palette.size(); ++i) {
+		if (i == selected) {
+			al_draw_filled_rectangle(x - 2, y - 2, x + well_size + 2, y + well_size + 2, al_map_rgb(0, 0, 0));
+		}
+
 		al_draw_filled_rectangle(x, y, x + well_size, y + well_size, palette[i]);
 		y += well_size + spacing;
 

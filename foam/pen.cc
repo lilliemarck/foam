@@ -15,7 +15,7 @@ void pen::on_mouse_axes(ALLEGRO_MOUSE_EVENT const& event) {
 
 	if (is_drawing_) {
 		room& room = editor_.get_room();
-		ALLEGRO_COLOR color = editor_.get_fg_color();
+		ALLEGRO_COLOR color = editor_.get_color();
 		bresenham_line(previous_position_, world_position, [&](int x, int y) {
 			room.put_pixel(x, y, color);
 		});
@@ -29,7 +29,7 @@ void pen::on_mouse_button_down(ALLEGRO_MOUSE_EVENT const& event) {
 
 	if (event.button == 1) {
 		room& room = editor_.get_room();
-		ALLEGRO_COLOR color = editor_.get_fg_color();
+		ALLEGRO_COLOR color = editor_.get_color();
 		room.put_pixel(previous_position_.x(), previous_position_.y(), color);
 		is_drawing_ = true;
 	}

@@ -36,7 +36,7 @@ static void button_handler() {
 editor::editor()
 	: room_(std::make_shared<foam::room>(32, 20))
 	, color_palette_(make_db_16_color_palette())
-	, fg_color_(color_palette_.back())
+	, color_index_(color_palette_.size() -1)
 	, mouse_z_{0}
 	, panning_{false} {
 	root_ = std::make_shared<ui::window>();
@@ -137,12 +137,16 @@ color_palette& editor::get_color_palette() {
 	return color_palette_;
 }
 
-ALLEGRO_COLOR editor::get_fg_color() const {
-	return fg_color_;
+ALLEGRO_COLOR editor::get_color() const {
+	return color_palette_[color_index_];
 }
 
-void editor::set_fg_color(ALLEGRO_COLOR color) {
-	fg_color_ = color;
+std::size_t editor::get_color_index() const {
+	return color_index_;
+}
+
+void editor::set_color_index(std::size_t index) {
+	color_index_ = index;
 }
 
 } // namespace foam
