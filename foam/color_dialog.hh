@@ -12,6 +12,7 @@ public:
 private:
 	void on_event(ALLEGRO_EVENT const& event) override;
 	void on_draw() override;
+	void show_context_menu(int x, int y);
 
 	foam::editor& editor_;
 	int first_index_;

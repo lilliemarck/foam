@@ -30,6 +30,7 @@ public:
 	ALLEGRO_COLOR get_color() const;
 	std::size_t get_color_index() const;
 	void set_color_index(std::size_t index);
+	void show_menu(std::shared_ptr<ui::menu> const& menu);
 
 private:
 	void handle_mouse_axes(ALLEGRO_EVENT const& event);

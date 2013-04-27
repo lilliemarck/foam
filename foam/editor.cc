@@ -54,12 +54,6 @@ editor::editor()
 	root_->append_child(button_);
 
 	pen_ = make_unique<pen>(*this);
-
-	menu_ = std::make_shared<ui::menu>();
-	menu_->append_item("Hello", [](){ std::cout << "Hello" << std::endl; });
-	menu_->append_item("World", [](){ std::cout << "World" << std::endl; });
-	menu_->set_frame({250, 100, 100, 100});
-	root_->append_child(menu_);
 }
 
 void editor::handle_event(ALLEGRO_EVENT const& event) {
@@ -75,6 +69,12 @@ void editor::handle_event(ALLEGRO_EVENT const& event) {
 	case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
 		handle_mouse_button_up(event);
 		break;
+	}
+
+	if (menu_) {
+		// Modify root after all event dispatching has been finished
+		root_->append_child(menu_);
+		menu_.reset();
 	}
 }
 
@@ -154,6 +154,10 @@ std::size_t editor::get_color_index() const {
 
 void editor::set_color_index(std::size_t index) {
 	color_index_ = index;
+}
+
+void editor::show_menu(std::shared_ptr<ui::menu> const& menu) {
+	menu_ = menu;
 }
 
 } // namespace foam

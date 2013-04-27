@@ -4,6 +4,7 @@
 #include <boost/algorithm/clamp.hpp>
 #include <boost/optional.hpp>
 #include <foam/editor.hh>
+#include <ui/menu.hh>
 
 namespace foam {
 namespace {
@@ -45,10 +46,16 @@ void color_dialog::on_event(ALLEGRO_EVENT const& event) {
 	case ALLEGRO_EVENT_MOUSE_AXES:
 		if (is_inside(rect, event.mouse.x, event.mouse.y)) {
 			int content_height = rect.height - 2 * border + spacing;
-			int visible_wells = std::max(content_height / (well_size + spacing), 0);
-			int max_index = palette.size() - visible_wells;
-			int new_index = first_index_ - event.mouse.dz;
-			first_index_ = boost::algorithm::clamp(new_index, 0, max_index);
+			std::size_t visible_wells = std::max(content_height / (well_size + spacing), 0);
+
+			if (visible_wells < palette.size()) {
+				int max_index = palette.size() - visible_wells;
+				int new_index = first_index_ - event.mouse.dz;
+				first_index_ = boost::algorithm::clamp(new_index, 0, max_index);
+			}
+			else {
+				first_index_ = 0;
+			}
 		}
 		break;
 	case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
@@ -60,6 +67,10 @@ void color_dialog::on_event(ALLEGRO_EVENT const& event) {
 				std::size_t index = *optional_index + first_index_;
 				if (index < palette.size()) {
 					editor_.set_color_index(index);
+
+					if (event.mouse.button == 2) {
+						show_context_menu(event.mouse.x, event.mouse.y);
+					}
 				}
 			}
 		}
@@ -91,6 +102,33 @@ void color_dialog::on_draw() {
 			break;
 		}
 	}
+}
+
+void color_dialog::show_context_menu(int x, int y) {
+	auto& palette = editor_.get_color_palette();
+
+	auto menu = std::make_shared<ui::menu>();
+	menu->append_item("Add Color", [&](){
+		std::size_t index = palette.size();
+		palette.push_back(al_map_rgb(255, 255, 255));
+		editor_.set_color_index(index);
+	});
+	menu->append_item("Edit Color", [&](){
+
+	});
+	menu->append_item("Remove Color", [&](){
+		if (palette.size() > 1) {
+			std::size_t index = editor_.get_color_index();
+			palette.erase(begin(palette) + index);
+
+			if (index >= palette.size()) {
+				editor_.set_color_index(palette.size() - 1);
+			}
+		}
+	});
+
+	menu->set_frame({x, y, 0, 0});
+	editor_.show_menu(menu);
 }
 
 } // namespace foam
