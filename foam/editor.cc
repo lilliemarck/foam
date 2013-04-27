@@ -43,14 +43,14 @@ editor::editor()
 	root_ = std::make_shared<ui::window>();
 	root_->set_frame({0, 0, 512, 320});
 
-	color_dialog_ = ui::make_window<color_dialog>(*this);
+	color_dialog_ = std::make_shared<color_dialog>(*this);
 	color_dialog_->set_frame({480, 0, 32, 320});
 	root_->append_child(color_dialog_);
 
-	button_ = ui::make_window<ui::button>();
+	button_ = std::make_shared<ui::button>();
 	button_->set_frame({10, 10, 10, 16});
 	button_->set_value("Button");
-	button_->get_control<ui::button>()->set_handler(&button_handler);
+	button_->set_handler(&button_handler);
 	root_->append_child(button_);
 
 	pen_ = make_unique<pen>(*this);

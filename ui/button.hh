@@ -4,7 +4,7 @@
 
 namespace ui {
 
-struct button : public control {
+struct button : public window {
 public:
 	using handler = void();
 
@@ -12,8 +12,8 @@ public:
 	void set_handler(handler* handler);
 
 private:
-	bool on_event(window& window, ALLEGRO_EVENT const& event) override;
-	void on_draw(window& window) override;
+	void on_event(ALLEGRO_EVENT const& event) override;
+	void on_draw() override;
 
 	handler* handler_;
 };

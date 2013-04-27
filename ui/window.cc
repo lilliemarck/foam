@@ -33,10 +33,6 @@ void window::detatch() {
 	}
 }
 
-void window::set_control(std::shared_ptr<control> const& control) {
-	control_ = control;
-}
-
 rectangle window::get_frame() const {
 	return frame_;
 }
@@ -54,12 +50,8 @@ void window::set_value(char const* value) {
 }
 
 void window::draw() {
+	al_set_clipping_rectangle(frame_.x, frame_.y, frame_.width, frame_.height);
 	on_draw();
-
-	if (control_) {
-		al_set_clipping_rectangle(frame_.x, frame_.y, frame_.width, frame_.height);
-		control_->on_draw(*this);
-	}
 
 	for (auto& child : children_) {
 		child->draw();
@@ -72,10 +64,6 @@ void window::dispatch_mouse_event(ALLEGRO_EVENT const& event) {
 	}
 
 	on_event(event);
-
-	if (control_) {
-		control_->on_event(*this, event);
-	}
 }
 
 void window::handle_event(ALLEGRO_EVENT const& event) {

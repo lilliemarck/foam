@@ -46,7 +46,7 @@ private:
 	std::unique_ptr<pen> pen_;
 	ui::window_ptr root_;
 	ui::window_ptr color_dialog_;
-	ui::window_ptr button_;
+	std::shared_ptr<ui::button> button_;
 	std::shared_ptr<ui::menu> menu_;
 };
 

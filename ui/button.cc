@@ -12,20 +12,17 @@ void button::set_handler(handler* handler) {
 	handler_ = handler;
 }
 
-bool button::on_event(window& window, ALLEGRO_EVENT const& event) {
+void button::on_event(ALLEGRO_EVENT const& event) {
 	switch (event.type) {
 	case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
-		if (is_inside(window.get_frame(), event.mouse.x, event.mouse.y) && handler_) {
+		if (is_inside(get_frame(), event.mouse.x, event.mouse.y) && handler_) {
 			handler_();
-			return true;
 		}
 	}
-
-	return false;
 }
 
-void button::on_draw(window& window) {
-	rectangle rect = window.get_frame();
+void button::on_draw() {
+	rectangle rect = get_frame();
 	ALLEGRO_COLOR color = al_map_rgb(0, 0, 255);
 	al_draw_filled_rectangle(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height, color);
 }

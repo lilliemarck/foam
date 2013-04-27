@@ -37,8 +37,8 @@ color_dialog::color_dialog(editor& editor)
 	, first_index_(0) {
 }
 
-bool color_dialog::on_event(ui::window& window, ALLEGRO_EVENT const& event) {
-	ui::rectangle const rect = window.get_frame();
+void color_dialog::on_event(ALLEGRO_EVENT const& event) {
+	ui::rectangle const rect = get_frame();
 	auto const& palette = editor_.get_color_palette();
 
 	switch (event.type) {
@@ -65,12 +65,10 @@ bool color_dialog::on_event(ui::window& window, ALLEGRO_EVENT const& event) {
 		}
 		break;
 	}
-
-	return true;
 }
 
-void color_dialog::on_draw(ui::window& window) {
-	ui::rectangle rect = window.get_frame();
+void color_dialog::on_draw() {
+	ui::rectangle rect = get_frame();
 	ALLEGRO_COLOR bg_color = al_map_rgb(63, 63, 63);
 	al_draw_filled_rectangle(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height, bg_color);
 
