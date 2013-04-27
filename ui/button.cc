@@ -8,7 +8,7 @@ button::button()
 	: handler_(nullptr) {
 }
 
-void button::set_handler(handler* handler) {
+void button::set_handler(handler handler) {
 	handler_ = handler;
 }
 
