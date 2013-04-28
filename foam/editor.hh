@@ -50,7 +50,6 @@ private:
 	ui::window& root_window_;
 	ui::window_ptr color_dialog_;
 	std::shared_ptr<ui::button> button_;
-	std::shared_ptr<ui::menu> menu_;
 };
 
 } // namespace foam

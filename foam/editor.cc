@@ -70,12 +70,6 @@ void editor::handle_event(ALLEGRO_EVENT const& event) {
 		handle_mouse_button_up(event);
 		break;
 	}
-
-	if (menu_) {
-		// Modify root after all event dispatching has been finished
-		root_window_.append_child(menu_);
-		menu_.reset();
-	}
 }
 
 void editor::handle_mouse_axes(ALLEGRO_EVENT const& event) {
@@ -157,7 +151,7 @@ void editor::set_color_index(std::size_t index) {
 }
 
 void editor::show_menu(std::shared_ptr<ui::menu> const& menu) {
-	menu_ = menu;
+	root_window_.append_child(menu);
 }
 
 } // namespace foam
