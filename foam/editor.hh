@@ -42,7 +42,6 @@ private:
 	std::shared_ptr<room> room_;
 	color_palette color_palette_;
 	std::size_t color_index_;
-	int mouse_z_;
 	vector2i grab_position_;
 	bool panning_;
 	std::unique_ptr<pen> pen_;

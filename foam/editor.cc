@@ -38,7 +38,6 @@ editor::editor()
 	: room_(std::make_shared<foam::room>(32, 20))
 	, color_palette_(make_db_16_color_palette())
 	, color_index_(color_palette_.size() -1)
-	, mouse_z_{0}
 	, panning_(false)
 	, root_window_(ui_context_.root_window()) {
 	root_window_.set_frame({0, 0, 512, 320});
@@ -81,10 +80,8 @@ void editor::handle_mouse_axes(ALLEGRO_EVENT const& event) {
 		camera_.set_position(grab_position_ - offset);
 	}
 
-	int delta_z = event.mouse.z - mouse_z_;
-	if (delta_z != 0) {
-		camera_.set_zoom(camera_.get_zoom() + event.mouse.z - mouse_z_, world_position);
-		mouse_z_ = event.mouse.z;
+	if (event.mouse.dz != 0) {
+		camera_.set_zoom(camera_.get_zoom() + event.mouse.dz, world_position);
 	}
 
 	if (pen_) {
