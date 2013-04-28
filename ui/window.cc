@@ -66,14 +66,4 @@ void window::dispatch_mouse_event(ALLEGRO_EVENT const& event) {
 	on_event(event);
 }
 
-void window::handle_event(ALLEGRO_EVENT const& event) {
-	switch (event.type) {
-	case ALLEGRO_EVENT_MOUSE_AXES:
-	case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
-	case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
-		dispatch_mouse_event(event);
-		break;
-	}
-}
-
 } // namespace ui

@@ -6,6 +6,7 @@
 #include <foam/room.hh>
 #include <foam/vector.hh>
 #include <ui/button.hh>
+#include <ui/context.hh>
 #include <ui/window.hh>
 #include <memory>
 
@@ -45,7 +46,8 @@ private:
 	vector2i grab_position_;
 	bool panning_;
 	std::unique_ptr<pen> pen_;
-	ui::window_ptr root_;
+	ui::context ui_context_;
+	ui::window& root_window_;
 	ui::window_ptr color_dialog_;
 	std::shared_ptr<ui::button> button_;
 	std::shared_ptr<ui::menu> menu_;

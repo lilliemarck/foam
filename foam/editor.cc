@@ -39,25 +39,25 @@ editor::editor()
 	, color_palette_(make_db_16_color_palette())
 	, color_index_(color_palette_.size() -1)
 	, mouse_z_{0}
-	, panning_{false} {
-	root_ = std::make_shared<ui::window>();
-	root_->set_frame({0, 0, 512, 320});
+	, panning_(false)
+	, root_window_(ui_context_.root_window()) {
+	root_window_.set_frame({0, 0, 512, 320});
 
 	color_dialog_ = std::make_shared<color_dialog>(*this);
 	color_dialog_->set_frame({480, 0, 32, 320});
-	root_->append_child(color_dialog_);
+	root_window_.append_child(color_dialog_);
 
 	button_ = std::make_shared<ui::button>();
 	button_->set_frame({10, 10, 10, 16});
 	button_->set_value("Button");
 	button_->set_handler(&button_handler);
-	root_->append_child(button_);
+	root_window_.append_child(button_);
 
 	pen_ = make_unique<pen>(*this);
 }
 
 void editor::handle_event(ALLEGRO_EVENT const& event) {
-	root_->handle_event(event);
+	ui_context_.handle_event(event);
 
 	switch (event.type) {
 	case ALLEGRO_EVENT_MOUSE_AXES:
@@ -73,7 +73,7 @@ void editor::handle_event(ALLEGRO_EVENT const& event) {
 
 	if (menu_) {
 		// Modify root after all event dispatching has been finished
-		root_->append_child(menu_);
+		root_window_.append_child(menu_);
 		menu_.reset();
 	}
 }
@@ -126,7 +126,7 @@ void editor::draw() {
 
 	al_identity_transform(&transform);
 	al_use_transform(&transform);
-	root_->draw();
+	ui_context_.draw();
 }
 
 camera& editor::get_camera() {

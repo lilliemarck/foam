@@ -49,20 +49,20 @@ public:
 	std::string const& get_value() const;
 	void set_value(char const* value);
 
-	void draw();
-	void handle_event(ALLEGRO_EVENT const& event);
-
 protected:
 	virtual void on_draw() {}
 	virtual void on_event(ALLEGRO_EVENT const& event) {}
 
 private:
+	void draw();
 	void dispatch_mouse_event(ALLEGRO_EVENT const& event);
 
 	window* parent_;
 	rectangle frame_;
 	std::string value_;
 	std::vector<std::shared_ptr<window>> children_;
+
+	friend class context;
 };
 
 } // namespace ui
