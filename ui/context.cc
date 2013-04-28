@@ -3,15 +3,15 @@
 namespace ui {
 
 context::context()
-	: root_window_(std::make_shared<window>()) {
+	: container_(std::make_shared<ui::container>()) {
 }
 
-window& context::root_window() {
-	return *root_window_;
+container& context::container() {
+	return *container_;
 }
 
 void context::draw() {
-	root_window_->draw();
+	container_->draw();
 }
 
 void context::handle_event(const ALLEGRO_EVENT& event) {
@@ -19,7 +19,7 @@ void context::handle_event(const ALLEGRO_EVENT& event) {
 	case ALLEGRO_EVENT_MOUSE_AXES:
 	case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
 	case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
-		collect_receivers(root_window_, event);
+		collect_receivers(container_, event);
 		dispatch_to_receivers(event);
 		event_receivers_.clear();
 		break;

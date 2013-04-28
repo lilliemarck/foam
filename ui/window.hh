@@ -40,7 +40,6 @@ public:
 	window();
 	virtual ~window();
 
-	void append_child(window_ptr const& child);
 	void detatch();
 
 	rectangle get_frame() const;
@@ -52,6 +51,8 @@ public:
 protected:
 	virtual void on_draw() {}
 	virtual void on_event(ALLEGRO_EVENT const& event) {}
+
+	void append_child(std::shared_ptr<window> const& child);
 
 private:
 	void draw();

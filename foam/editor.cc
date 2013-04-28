@@ -39,18 +39,18 @@ editor::editor()
 	, color_palette_(make_db_16_color_palette())
 	, color_index_(color_palette_.size() -1)
 	, panning_(false)
-	, root_window_(ui_context_.root_window()) {
-	root_window_.set_frame({0, 0, 512, 320});
+	, root_container_(ui_context_.container()) {
+	root_container_.set_frame({0, 0, 512, 320});
 
 	color_dialog_ = std::make_shared<color_dialog>(*this);
 	color_dialog_->set_frame({480, 0, 32, 320});
-	root_window_.append_child(color_dialog_);
+	root_container_.append_child(color_dialog_);
 
 	button_ = std::make_shared<ui::button>();
 	button_->set_frame({10, 10, 10, 16});
 	button_->set_value("Button");
 	button_->set_handler(&button_handler);
-	root_window_.append_child(button_);
+	root_container_.append_child(button_);
 
 	pen_ = make_unique<pen>(*this);
 }
@@ -148,7 +148,7 @@ void editor::set_color_index(std::size_t index) {
 }
 
 void editor::show_menu(std::shared_ptr<ui::menu> const& menu) {
-	root_window_.append_child(menu);
+	root_container_.append_child(menu);
 }
 
 } // namespace foam

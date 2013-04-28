@@ -7,6 +7,7 @@
 #include <foam/vector.hh>
 #include <ui/button.hh>
 #include <ui/context.hh>
+#include <ui/container.hh>
 #include <ui/window.hh>
 #include <memory>
 
@@ -46,7 +47,7 @@ private:
 	bool panning_;
 	std::unique_ptr<pen> pen_;
 	ui::context ui_context_;
-	ui::window& root_window_;
+	ui::container& root_container_;
 	ui::window_ptr color_dialog_;
 	std::shared_ptr<ui::button> button_;
 };
