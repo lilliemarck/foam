@@ -58,12 +58,4 @@ void window::draw() {
 	}
 }
 
-void window::dispatch_mouse_event(ALLEGRO_EVENT const& event) {
-	for (auto i = children_.rbegin(); i != children_.rend(); ++i) {
-		(*i)->dispatch_mouse_event(event);
-	}
-
-	on_event(event);
-}
-
 } // namespace ui

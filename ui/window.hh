@@ -55,7 +55,6 @@ protected:
 
 private:
 	void draw();
-	void dispatch_mouse_event(ALLEGRO_EVENT const& event);
 
 	window* parent_;
 	rectangle frame_;

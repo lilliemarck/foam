@@ -2,12 +2,16 @@
 
 namespace ui {
 
+context::context()
+	: root_window_(std::make_shared<window>()) {
+}
+
 window& context::root_window() {
-	return root_window_;
+	return *root_window_;
 }
 
 void context::draw() {
-	root_window_.draw();
+	root_window_->draw();
 }
 
 void context::handle_event(const ALLEGRO_EVENT& event) {
@@ -15,8 +19,30 @@ void context::handle_event(const ALLEGRO_EVENT& event) {
 	case ALLEGRO_EVENT_MOUSE_AXES:
 	case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
 	case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
-		root_window_.dispatch_mouse_event(event);
+		collect_receivers(root_window_, event);
+		dispatch_to_receivers(event);
+		event_receivers_.clear();
 		break;
+	}
+}
+
+/*
+ * It may not be necessary to send event to leaf windows first since events are
+ * currently delivered to all windows even if the mouse is outside the windows
+ * bounds.
+ */
+void context::collect_receivers(window_ptr const& window, ALLEGRO_EVENT const& event) {
+	auto const& children = window->children_;
+	for (auto i = children.rbegin(); i != children.rend(); ++i) {
+		collect_receivers(*i, event);
+	}
+
+	event_receivers_.push_back(window);
+}
+
+void context::dispatch_to_receivers(ALLEGRO_EVENT const& event) {
+	for (auto& window : event_receivers_) {
+		window->on_event(event);
 	}
 }
 
